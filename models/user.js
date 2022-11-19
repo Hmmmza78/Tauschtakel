@@ -19,6 +19,11 @@ const userSchema = new mongoose.Schema({
     type: Array,
     required: true
   },
+  blocked: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now()

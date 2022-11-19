@@ -98,7 +98,7 @@ router.post("/user/check", async (req, res) => {
     }
 });
 
-router.post("/user/update", upload.single("image"), async (req, res) => {
+router.post("/user/updatePassword", upload.single("image"), async (req, res) => {
     let {
         uid,
         password
@@ -119,6 +119,75 @@ router.post("/user/update", upload.single("image"), async (req, res) => {
     }
 });
 
+router.post("/user/block", async (req, res) => {
+    let {
+        uid
+    } = req.body;
+    try {
+
+        response = await User.findByIdAndUpdate(uid, {
+            blocked: true
+        });
+        res.json({
+            status: "success"
+        });
+    } catch (e) {
+        res.json({
+            status: "internal server error!"
+        });
+        console.log(e);
+    }
+});
+
+router.post("/user/updateInfo", async (req, res) => {
+    let {
+        uid,
+        username,
+        email
+    } = req.body;
+    try {
+        response = await User.findByIdAndUpdate(uid, {
+            username,
+            email
+        });
+        res.json({
+            status: "success"
+        });
+    } catch (e) {
+        res.json({
+            status: "internal server error!"
+        });
+        console.log(e);
+    }
+});
+
+router.post("/user/delete", async (req, res) => {
+    let {
+        uid
+    } = req.body;
+    try {
+        response = await User.findByIdAndDelete(uid);
+        res.json({
+            status: "success"
+        });
+    } catch (e) {
+        res.json({
+            status: "internal server error!"
+        });
+        console.log(e);
+    }
+});
+
+router.get("/allUsers", async (req, res) => {
+    try {
+        response = await User.find();
+        res.json({ response });
+    } catch (e) {
+        res.json({
+            status: "internal server error!"
+        });
+    }
+})
 
 router.get("/logout", (req, res) => {
     res.cookie("token", "", {

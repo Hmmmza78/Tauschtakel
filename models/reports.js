@@ -1,7 +1,7 @@
 // msg_id, message, sender, chat_id, time
 const mongoose = require("mongoose");
 
-const articleSchema = new mongoose.Schema({
+const reportSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true
@@ -10,34 +10,13 @@ const articleSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    image: {
-        type: String,
-        required: true
-    },
     uid: {
         type: String,
         required: true
     },
-    zip: {
-        type: String,
-        required: true
-    },
-    price: {
-        type: String,
-        required: true
-    },
-    category: {
-        type: String,
-        required: true
-    },
-    condition: {
-        type: String,
-        required: true
-    },
-    status: {
+    article: {
         type: String,
         required: true,
-        default: "pending"
     },
     createdAt: {
         type: Date,
@@ -49,9 +28,9 @@ const articleSchema = new mongoose.Schema({
         default: null
     }
 }, {
-    collection: "articles",
+    collection: "reports",
 });
 
-const model = mongoose.model("articleSchema", articleSchema);
+const model = mongoose.model("reportSchema", reportSchema);
 
 module.exports = model;

@@ -109,6 +109,50 @@ router.post("/edit", async (req, res) => {
     }
 });
 
+router.post("/approve", async (req, res) => {
+    let {
+        id,
+    } = req.body;
+    try {
+        await Article.findByIdAndUpdate(
+            id, {
+                status: "approved",
+            }
+        );
+        res.json({
+            status: "success",
+            message: "Article successfully approved"
+        });
+    } catch (e) {
+        res.json({
+            ...e.message,
+            status: "fail"
+        });
+    }
+});
+
+router.post("/reject", async (req, res) => {
+    let {
+        id,
+    } = req.body;
+    try {
+        await Article.findByIdAndUpdate(
+            id, {
+                status: "rejected",
+            }
+        );
+        res.json({
+            status: "success",
+            message: "Article successfully rejected"
+        });
+    } catch (e) {
+        res.json({
+            ...e.message,
+            status: "fail"
+        });
+    }
+});
+
 router.post("/delete", async (req, res) => {
     let {
         id
