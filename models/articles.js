@@ -4,15 +4,18 @@ const mongoose = require("mongoose");
 const articleSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true
+        required: true,
+        maxLength: 20
     },
     description: {
         type: String,
-        required: true
+        required: true,
+        maxLength: 300
     },
     image: {
         type: String,
-        required: true
+        required: true,
+        maxLength: 5
     },
     uid: {
         type: String,
@@ -32,7 +35,8 @@ const articleSchema = new mongoose.Schema({
     },
     condition: {
         type: String,
-        required: true
+        required: true,
+        maxLength: 200
     },
     status: {
         type: String,

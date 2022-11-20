@@ -94,7 +94,8 @@ router.post("/edit", async (req, res) => {
                 status,
                 condition,
                 price,
-                zip
+                zip,
+                updatedAt: Date.now()
             }
         );
         res.json({

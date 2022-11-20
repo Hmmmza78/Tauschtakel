@@ -98,7 +98,7 @@ router.post("/user/check", async (req, res) => {
     }
 });
 
-router.post("/user/updatePassword", upload.single("image"), async (req, res) => {
+router.post("/updatePassword", upload.single("image"), async (req, res) => {
     let {
         uid,
         password
@@ -106,7 +106,8 @@ router.post("/user/updatePassword", upload.single("image"), async (req, res) => 
     try {
         password = await bcrypt.hash(password, 15);
         response = await User.findByIdAndUpdate(uid, {
-            password
+            password,
+            updatedAt: Date.now()
         });
         res.json({
             status: "success"
@@ -119,7 +120,7 @@ router.post("/user/updatePassword", upload.single("image"), async (req, res) => 
     }
 });
 
-router.post("/user/block", async (req, res) => {
+router.post("/block", async (req, res) => {
     let {
         uid
     } = req.body;
@@ -139,7 +140,7 @@ router.post("/user/block", async (req, res) => {
     }
 });
 
-router.post("/user/updateInfo", async (req, res) => {
+router.post("/updateInfo", async (req, res) => {
     let {
         uid,
         username,
@@ -148,7 +149,8 @@ router.post("/user/updateInfo", async (req, res) => {
     try {
         response = await User.findByIdAndUpdate(uid, {
             username,
-            email
+            email,
+            updatedAt: Date.now()
         });
         res.json({
             status: "success"
@@ -161,7 +163,7 @@ router.post("/user/updateInfo", async (req, res) => {
     }
 });
 
-router.post("/user/delete", async (req, res) => {
+router.post("/delete", async (req, res) => {
     let {
         uid
     } = req.body;

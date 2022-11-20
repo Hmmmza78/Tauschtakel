@@ -64,7 +64,8 @@ router.post("/edit", async (req, res) => {
     try {
         const interest = await Interest.findByIdAndUpdate(
             id, {
-                title
+                title,
+                updatedAt: Date.now()
             }
         );
         res.json({
