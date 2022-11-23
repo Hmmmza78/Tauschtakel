@@ -1,22 +1,29 @@
 // msg_id, message, sender, chat_id, time
 const mongoose = require("mongoose");
 
-const reportSchema = new mongoose.Schema({
+const packageSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true
+        required: true,
+        maxLength: 50
     },
     description: {
         type: String,
-        required: true
+        required: true,
+        maxLength: 300
     },
-    uid: {
+    duration: {
         type: String,
         required: true
     },
-    articleId: {
+    price: {
+        type: String,
+        required: true
+    },
+    status: {
         type: String,
         required: true,
+        default: "active"
     },
     createdAt: {
         type: Date,
@@ -28,9 +35,9 @@ const reportSchema = new mongoose.Schema({
         default: null
     }
 }, {
-    collection: "reports",
+    collection: "package",
 });
 
-const model = mongoose.model("reportSchema", reportSchema);
+const model = mongoose.model("packageSchema", packageSchema);
 
 module.exports = model;

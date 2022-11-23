@@ -13,14 +13,14 @@ router.post("/new", async (req, res) => {
         title,
         description,
         uid,
-        article
+        articleId
     } = req.body;
     try {
         let report = await Report.create({
             title,
             description,
             uid,
-            article
+            articleId
         });
         res.json({
             status: "success"

@@ -6,7 +6,6 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 
 // db connection
-const User = require("./models/user");
 // const {
 //     Socket
 // } = require("socket.io");
@@ -26,16 +25,24 @@ app.use(express.urlencoded({
 app.use(express.json());
 app.use(cookieParser());
 
-// importing messages+chat router
+// importing routers
 // msgRouter = require("./routes/messages");
 // chatRouter = require("./routes/chats");
+adminRouter = require("./routes/admin");
 articleRouter = require("./routes/articles");
 interestRouter = require("./routes/interests");
+reportRouter = require("./routes/reports");
+packageRouter = require("./routes/packages");
 userRouter = require("./routes/users");
+
+
 // app.use("/message", msgRouter);
 // app.use("/chat", chatRouter);
+app.use("/admin", adminRouter);
 app.use("/article", articleRouter);
 app.use("/interest", interestRouter);
+app.use("/report", reportRouter);
+app.use("/package", packageRouter);
 app.use("/user", userRouter);
 
 

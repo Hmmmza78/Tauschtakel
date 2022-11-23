@@ -43,7 +43,6 @@ router.post("/new", upload.single("image"), async (req, res) => {
     }
 });
 
-
 router.get("/allArticles", async (req, res) => {
     try {
         const articles = await Article.find();
@@ -56,6 +55,31 @@ router.get("/allArticles", async (req, res) => {
     }
 });
 
+router.get("/pendingArticles", async (req, res) => {
+    try {
+        const articles = await Article.find({
+            status: "pending"
+        });
+        res.json({
+            articles
+        });
+    } catch (e) {
+        res.json(e.message);
+    }
+});
+
+router.get("/approvedArticles", async (req, res) => {
+    try {
+        const articles = await Article.find({
+            status: "approved"
+        });
+        res.json({
+            articles
+        });
+    } catch (e) {
+        res.json(e.message);
+    }
+});
 
 router.get("/userArticles", async (req, res) => {
     let {
@@ -73,14 +97,12 @@ router.get("/userArticles", async (req, res) => {
     }
 });
 
-
 router.post("/edit", async (req, res) => {
     let {
         id,
         title,
         description,
         category,
-        status,
         condition,
         price,
         zip
@@ -91,7 +113,6 @@ router.post("/edit", async (req, res) => {
                 title,
                 description,
                 category,
-                status,
                 condition,
                 price,
                 zip,

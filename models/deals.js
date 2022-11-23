@@ -1,22 +1,22 @@
 // msg_id, message, sender, chat_id, time
 const mongoose = require("mongoose");
 
-const reportSchema = new mongoose.Schema({
-    title: {
+const dealSchema = new mongoose.Schema({
+    client: {
         type: String,
         required: true
     },
-    description: {
+    seller: {
         type: String,
         required: true
     },
-    uid: {
+    article: {
         type: String,
         required: true
     },
-    articleId: {
+    status: {
         type: String,
-        required: true,
+        required: true
     },
     createdAt: {
         type: Date,
@@ -28,9 +28,9 @@ const reportSchema = new mongoose.Schema({
         default: null
     }
 }, {
-    collection: "reports",
+    collection: "deals",
 });
 
-const model = mongoose.model("reportSchema", reportSchema);
+const model = mongoose.model("dealSchema", dealSchema);
 
 module.exports = model;

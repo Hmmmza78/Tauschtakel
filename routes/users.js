@@ -82,7 +82,7 @@ router.post("/login", async (req, res) => {
     })
 });
 
-router.post("/user/check", async (req, res) => {
+router.post("/checkUsername", async (req, res) => {
     let username = req.body.username;
     let nameOld = await User.find({
         name: username
@@ -140,7 +140,7 @@ router.post("/block", async (req, res) => {
     }
 });
 
-router.post("/updateInfo", async (req, res) => {
+router.post("/edit", async (req, res) => {
     let {
         uid,
         username,
@@ -182,14 +182,39 @@ router.post("/delete", async (req, res) => {
 
 router.get("/allUsers", async (req, res) => {
     try {
-        response = await User.find();
-        res.json({ response });
+        users = await User.find();
+        users.forEach(user => {
+            user.password = "";
+        });
+        res.json({
+            users
+        });
     } catch (e) {
         res.json({
             status: "internal server error!"
         });
     }
-})
+});
+
+router.get("/premiumUsers", async (req, res) => {
+    try {
+        users = await User.find({
+            'packages': {
+                $exists: true
+            }
+        });
+        users.forEach(user => {
+            user.password = "";
+        });
+        res.json({
+            users
+        });
+    } catch (e) {
+        res.json({
+            status: "internal server error!"
+        });
+    }
+});
 
 router.get("/logout", (req, res) => {
     res.cookie("token", "", {
@@ -198,6 +223,24 @@ router.get("/logout", (req, res) => {
         status: "Under development"
     });
 });
+
+// this block must be at the end
+router.get("/:id", async (req, res) => {
+    let {
+        id
+    } = req.params;
+    try {
+        user = await User.findById(id);
+        user.password = "";
+        res.json({
+            user
+        });
+    } catch (e) {
+        res.json({
+            status: "internal server error!"
+        });
+    }
+})
 
 // section for middlewares
 
