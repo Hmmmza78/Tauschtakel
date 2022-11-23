@@ -46,6 +46,7 @@ app.use("/package", packageRouter);
 app.use("/user", userRouter);
 
 
+app.get("/", (req,res)=>{ res.send("Hello Dev")})
 // section for middlewares
 // auth.js
 
