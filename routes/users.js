@@ -13,6 +13,7 @@ const {
 } = require('express/lib/response');
 
 router.post("/register", async (req, res, next) => {
+    
     let {
         username,
         email,
@@ -181,6 +182,16 @@ router.post("/delete", async (req, res) => {
         });
         console.log(e);
     }
+});
+
+router.post("/buyPackage", async (req, res) => {
+    let {
+        package,
+        uid
+    } = req.body;
+    try {
+        response = await User.findByIdAndUpdate(uid, {
+            packages
 });
 
 router.get("/allUsers", async (req, res) => {

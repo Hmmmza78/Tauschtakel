@@ -5,7 +5,7 @@ const interestSchema = new mongoose.Schema({
     title: {
         type: String,
         unique: true,
-        required: true
+        required: false
     },
     createdAt: {
         type: Date,
