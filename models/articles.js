@@ -13,7 +13,7 @@ const articleSchema = new mongoose.Schema({
         maxLength: 300
     },
     image: {
-        type: String,
+        type: Array,
         required: true,
         maxLength: 5
     },

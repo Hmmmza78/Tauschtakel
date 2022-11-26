@@ -16,8 +16,8 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   interests: {
-    type: Array,
-    required: true
+    type: String,
+    required: false
   },
   blocked: {
     type: Boolean,

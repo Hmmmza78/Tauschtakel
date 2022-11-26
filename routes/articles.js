@@ -11,7 +11,6 @@ const User = require("../models/user");
 router.get("/test", (req, res) => {
     res.send("Article")
 });
-
 router.post("/new", upload.single("image"), async (req, res) => {
     let {
         title,
@@ -42,19 +41,6 @@ router.post("/new", upload.single("image"), async (req, res) => {
         res.json(e);
     }
 });
-
-router.get("/allArticles", async (req, res) => {
-    try {
-        const articles = await Article.find();
-        // console.log(articles);
-        res.json({
-            articles
-        });
-    } catch (e) {
-        res.json(e.message);
-    }
-});
-
 router.get("/pendingArticles", async (req, res) => {
     try {
         const articles = await Article.find({
@@ -67,7 +53,6 @@ router.get("/pendingArticles", async (req, res) => {
         res.json(e.message);
     }
 });
-
 router.get("/approvedArticles", async (req, res) => {
     try {
         const articles = await Article.find({
@@ -80,7 +65,6 @@ router.get("/approvedArticles", async (req, res) => {
         res.json(e.message);
     }
 });
-
 router.get("/userArticles", async (req, res) => {
     let {
         uid
@@ -96,7 +80,6 @@ router.get("/userArticles", async (req, res) => {
         res.json(e.message);
     }
 });
-
 router.post("/edit", async (req, res) => {
     let {
         id,
@@ -130,7 +113,6 @@ router.post("/edit", async (req, res) => {
         });
     }
 });
-
 router.post("/approve", async (req, res) => {
     let {
         id,
@@ -152,7 +134,6 @@ router.post("/approve", async (req, res) => {
         });
     }
 });
-
 router.post("/reject", async (req, res) => {
     let {
         id,
@@ -174,7 +155,6 @@ router.post("/reject", async (req, res) => {
         });
     }
 });
-
 router.post("/delete", async (req, res) => {
     let {
         id
@@ -190,7 +170,17 @@ router.post("/delete", async (req, res) => {
         res.json(e.message);
     }
 });
-
+router.get("/allArticles", async (req, res) => {
+    try {
+        const articles = await Article.find();
+        // console.log(articles);
+        res.json({
+            articles
+        });
+    } catch (e) {
+        res.json(e.message);
+    }
+});
 // following block must be at the end
 router.get("/:id", async (req, res) => {
     let {

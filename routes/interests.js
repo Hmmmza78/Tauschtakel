@@ -42,20 +42,6 @@ router.post("/new", async (req, res) => {
     });
 });
 
-
-router.get("/allInterests", async (req, res) => {
-    try {
-        const interests = await Interest.find();
-        // console.log(interests);
-        res.json({
-            interests
-        });
-    } catch (e) {
-        res.json(e.message);
-    }
-});
-
-
 router.post("/edit", async (req, res) => {
     let {
         id,
@@ -86,6 +72,17 @@ router.post("/delete", async (req, res) => {
         );
         res.json({
             status: "success"
+        });
+    } catch (e) {
+        res.json(e.message);
+    }
+});
+router.get("/allInterests", async (req, res) => {
+    try {
+        const interests = await Interest.find();
+        // console.log(interests);
+        res.json({
+            interests
         });
     } catch (e) {
         res.json(e.message);

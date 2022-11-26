@@ -33,16 +33,6 @@ router.post("/new", async (req, res) => {
 });
 
 
-router.get("/allDeals", async (req, res) => {
-    try {
-        const deals = await Deal.find();
-        res.json({
-            deals
-        });
-    } catch (e) {
-        res.json(e.message);
-    }
-});
 
 
 // !this api needs to be reviewed
@@ -76,6 +66,16 @@ router.post("/delete", async (req, res) => {
         );
         res.json({
             status: "success"
+        });
+    } catch (e) {
+        res.json(e.message);
+    }
+});
+router.get("/allDeals", async (req, res) => {
+    try {
+        const deals = await Deal.find();
+        res.json({
+            deals
         });
     } catch (e) {
         res.json(e.message);

@@ -13,9 +13,11 @@ const {
 } = require('express/lib/response');
 
 router.post("/register", async (req, res, next) => {
-    let username = req.body.username;
-    let email = req.body.email;
-    let password = req.body.password;
+    let {
+        username,
+        email,
+        password
+    } = req.body;
     password = await bcrypt.hash(password, 15)
 
     User.find({
@@ -51,7 +53,6 @@ router.post("/register", async (req, res, next) => {
     });
 });
 
-
 router.post("/login", async (req, res) => {
     let {
         username,
@@ -83,7 +84,9 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/checkUsername", async (req, res) => {
-    let username = req.body.username;
+    let {
+        username
+    } = req.body;
     let nameOld = await User.find({
         name: username
     });
