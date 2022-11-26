@@ -13,7 +13,6 @@ const {
 } = require('express/lib/response');
 
 router.post("/register", async (req, res, next) => {
-    
     let {
         username,
         email,
@@ -192,6 +191,13 @@ router.post("/buyPackage", async (req, res) => {
     try {
         response = await User.findByIdAndUpdate(uid, {
             packages
+        });
+    } catch (e) {
+        res.json({
+            status: "fail",
+            "message": e.message
+        });
+    }
 });
 
 router.get("/allUsers", async (req, res) => {
