@@ -9,27 +9,34 @@ router.get("/test", (req, res) => {
 });
 
 router.post("/new", async (req, res) => {
-    let {
-        title,
-        description,
-        uid,
-        articleId
-    } = req.body;
     try {
-        let report = await Report.create({
+        let {
             title,
             description,
             uid,
             articleId
-        });
-        res.json({
-            status: "success"
-        });
+        } = req.body;
+        try {
+            let report = await Report.create({
+                title,
+                description,
+                uid,
+                articleId
+            });
+            res.json({
+                status: "success"
+            });
+        } catch (e) {
+            res.json({
+                ...e,
+                status: "fail"
+            });
+        }
     } catch (e) {
-        res.json({
-            ...e,
-            status: "fail"
-        });
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
     }
 });
 
@@ -47,10 +54,10 @@ router.get("/allReports", async (req, res) => {
 
 // following block must be at the end
 router.get("/:id", async (req, res) => {
-    let {
-        id
-    } = req.params;
     try {
+        let {
+            id
+        } = req.params;
         const report = await Report.findById(
             id
         );
@@ -58,7 +65,10 @@ router.get("/:id", async (req, res) => {
             report
         });
     } catch (e) {
-        res.json(e.message);
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
     }
 });
 

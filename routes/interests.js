@@ -2,6 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 
+router.use(express.json());
+
 const Interest = require("../models/interests");
 
 router.get("/test", (req, res) => {
@@ -9,74 +11,103 @@ router.get("/test", (req, res) => {
 });
 
 router.post("/new", async (req, res) => {
-    let {
-        title,
-    } = req.body;
-    Interest.find({
-        title
-    }, async (err, result) => {
-        if (err) {
-            res.statusCode(500).end();
-            return
-        }
-        if (result.length > 0) {
-            res.json({
-                status: "fail",
-                message: "Interest already exists!"
-            }).end();
-            return;
-        }
+    try {
+        let {
+            title,
+        } = req.body;
+        console.log(req.body);
+        Interest.find({
+            title
+        }, async (err, result) => {
+            if (err) {
+                res.statusCode(500).end();
+                return
+            }
+            console.log(result);
+            if (true) {
+                console.log(result[0].title);
+            }
+            if (result.length > 0) {
+                res.json({
+                    status: "fail",
+                    message: "Interest already exists!"
+                }).end();
+                return;
+            }
+            try {
+                let interest = await Interest.create({
+                    title,
+                });
+                res.json({
+                    status: "success"
+                });
+            } catch (e) {
+                res.json({
+                    ...e,
+                    status: "fail"
+                });
+            }
+        });
+
+    } catch (e) {
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
+    }
+});
+
+router.post("/edit", async (req, res) => {
+    try {
+        let {
+            id,
+            title
+        } = req.body;
         try {
-            let interest = await Interest.create({
-                title,
-            });
+            const interest = await Interest.findByIdAndUpdate(
+                id, {
+                    title,
+                    updatedAt: Date.now()
+                }
+            );
             res.json({
                 status: "success"
             });
         } catch (e) {
-            res.json({
-                ...e,
-                status: "fail"
-            });
+            res.json(e.message);
         }
-    });
-});
 
-router.post("/edit", async (req, res) => {
-    let {
-        id,
-        title
-    } = req.body;
-    try {
-        const interest = await Interest.findByIdAndUpdate(
-            id, {
-                title,
-                updatedAt: Date.now()
-            }
-        );
-        res.json({
-            status: "success"
-        });
     } catch (e) {
-        res.json(e.message);
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
     }
 });
 
 router.post("/delete", async (req, res) => {
-    let {
-        id,
-    } = req.body;
     try {
-        const interest = await Interest.findByIdAndDelete(
-            id
-        );
-        res.json({
-            status: "success"
-        });
+        let {
+            id,
+        } = req.body;
+        try {
+            const interest = await Interest.findByIdAndDelete(
+                id
+            );
+            res.json({
+                status: "success"
+            });
+        } catch (e) {
+            res.json(e.message);
+        }
     } catch (e) {
-        res.json(e.message);
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
     }
 });
+
 router.get("/allInterests", async (req, res) => {
     try {
         const interests = await Interest.find();
@@ -90,10 +121,10 @@ router.get("/allInterests", async (req, res) => {
 });
 // following block must be at the end
 router.get("/:id", async (req, res) => {
-    let {
-        id
-    } = req.params;
     try {
+        let {
+            id
+        } = req.params;
         const interest = await Interest.findById(
             id
         );

@@ -21,7 +21,12 @@ router.get("/meta", async (req, res) => {
             deals,
             pendingArticles
         });
-    } catch (err) {}
+    } catch (e) {
+        res.status(500).json({
+            status: "fail",
+            message: "internal server error"
+        }).end();
+    }
 })
 
 module.exports = router;

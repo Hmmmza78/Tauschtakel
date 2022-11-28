@@ -12,33 +12,158 @@ router.get("/test", (req, res) => {
     res.send("Article")
 });
 router.post("/new", upload.single("image"), async (req, res) => {
-    let {
-        title,
-        description,
-        uid,
-        category,
-        status,
-        condition,
-        price,
-        zip
-    } = req.body;
     try {
-        let article = await Article.create({
+        let {
             title,
             description,
-            image: newFileName,
             uid,
             category,
             status,
             condition,
             price,
             zip
-        });
-        res.json({
-            status: "success"
-        });
+        } = req.body;
+        try {
+            let article = await Article.create({
+                title,
+                description,
+                image: newFileName,
+                uid,
+                category,
+                status,
+                condition,
+                price,
+                zip
+            });
+            res.json({
+                status: "success"
+            });
+        } catch (e) {
+            res.json(e);
+        }
     } catch (e) {
-        res.json(e);
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
+    }
+});
+router.post("/edit", async (req, res) => {
+    try {
+        let {
+            id,
+            title,
+            description,
+            category,
+            condition,
+            price,
+            zip
+        } = req.body;
+        try {
+            await Article.findByIdAndUpdate(
+                id, {
+                    title,
+                    description,
+                    category,
+                    condition,
+                    price,
+                    zip,
+                    updatedAt: Date.now()
+                }
+            );
+            res.json({
+                status: "success",
+                message: "Article successfully updated"
+            });
+        } catch (e) {
+            res.json({
+                ...e.message,
+                status: "fail"
+            });
+        }
+    } catch (e) {
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
+    }
+});
+router.post("/approve", async (req, res) => {
+    try {
+        let {
+            id,
+        } = req.body;
+        try {
+            await Article.findByIdAndUpdate(
+                id, {
+                    status: "approved",
+                }
+            );
+            res.json({
+                status: "success",
+                message: "Article successfully approved"
+            });
+        } catch (e) {
+            res.json({
+                ...e.message,
+                status: "fail"
+            });
+        }
+    } catch (e) {
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
+    }
+});
+router.post("/reject", async (req, res) => {
+    try {
+        let {
+            id,
+        } = req.body;
+        try {
+            await Article.findByIdAndUpdate(
+                id, {
+                    status: "rejected",
+                }
+            );
+            res.json({
+                status: "success",
+                message: "Article successfully rejected"
+            });
+        } catch (e) {
+            res.json({
+                ...e.message,
+                status: "fail"
+            });
+        }
+    } catch (e) {
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
+    }
+});
+router.post("/delete", async (req, res) => {
+    try {
+        let {
+            id
+        } = req.body;
+        try {
+            await Article.findByIdAndDelete(
+                id
+            );
+            res.json({
+                status: "success"
+            });
+        } catch (e) {
+            res.json(e.message);
+        }
+    } catch (e) {
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
     }
 });
 router.get("/pendingArticles", async (req, res) => {
@@ -65,109 +190,26 @@ router.get("/approvedArticles", async (req, res) => {
         res.json(e.message);
     }
 });
-router.get("/userArticles", async (req, res) => {
-    let {
-        uid
-    } = req.body;
+router.post("/userArticles", async (req, res) => {
     try {
-        const articles = await Article.find({
+        let {
             uid
-        });
-        res.json({
-            articles
-        });
+        } = req.body;
+        try {
+            const articles = await Article.find({
+                uid
+            });
+            res.json({
+                articles
+            });
+        } catch (e) {
+            res.json(e.message);
+        }
     } catch (e) {
-        res.json(e.message);
-    }
-});
-router.post("/edit", async (req, res) => {
-    let {
-        id,
-        title,
-        description,
-        category,
-        condition,
-        price,
-        zip
-    } = req.body;
-    try {
-        await Article.findByIdAndUpdate(
-            id, {
-                title,
-                description,
-                category,
-                condition,
-                price,
-                zip,
-                updatedAt: Date.now()
-            }
-        );
-        res.json({
-            status: "success",
-            message: "Article successfully updated"
-        });
-    } catch (e) {
-        res.json({
-            ...e.message,
-            status: "fail"
-        });
-    }
-});
-router.post("/approve", async (req, res) => {
-    let {
-        id,
-    } = req.body;
-    try {
-        await Article.findByIdAndUpdate(
-            id, {
-                status: "approved",
-            }
-        );
-        res.json({
-            status: "success",
-            message: "Article successfully approved"
-        });
-    } catch (e) {
-        res.json({
-            ...e.message,
-            status: "fail"
-        });
-    }
-});
-router.post("/reject", async (req, res) => {
-    let {
-        id,
-    } = req.body;
-    try {
-        await Article.findByIdAndUpdate(
-            id, {
-                status: "rejected",
-            }
-        );
-        res.json({
-            status: "success",
-            message: "Article successfully rejected"
-        });
-    } catch (e) {
-        res.json({
-            ...e.message,
-            status: "fail"
-        });
-    }
-});
-router.post("/delete", async (req, res) => {
-    let {
-        id
-    } = req.body;
-    try {
-        await Article.findByIdAndDelete(
-            id
-        );
-        res.json({
-            status: "success"
-        });
-    } catch (e) {
-        res.json(e.message);
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
     }
 });
 router.get("/allArticles", async (req, res) => {
@@ -183,10 +225,10 @@ router.get("/allArticles", async (req, res) => {
 });
 // following block must be at the end
 router.get("/:id", async (req, res) => {
-    let {
-        id
-    } = req.params;
     try {
+        let {
+            id
+        } = req.params;
         const article = await Article.findById(
             id
         );
@@ -194,7 +236,10 @@ router.get("/:id", async (req, res) => {
             article
         });
     } catch (e) {
-        res.json(e.message);
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
     }
 });
 
