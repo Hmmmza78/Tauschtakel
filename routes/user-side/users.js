@@ -2,12 +2,16 @@ const express = require('express')
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const {
+    authenticateToken
+} = require("../../functions/auth");
+// router.use(authenticateToken);
 
 const {
     upload
-} = require("../functions/upload")
+} = require("../../functions/upload")
 
-const User = require("../models/user");
+const User = require("../../models/user");
 const {
     append
 } = require('express/lib/response');
@@ -21,9 +25,11 @@ router.post("/register", async (req, res, next) => {
         } = req.body;
         password = await bcrypt.hash(password, 15)
 
+        console.log(email);
         User.find({
             $or: [{
-                username,
+                username
+            }, {
                 email
             }]
 
@@ -31,6 +37,7 @@ router.post("/register", async (req, res, next) => {
             if (err) {
                 throw err;
             } else {
+                console.log(result);
                 if (result.length > 0) {
                     res.json({
                         status: "fail",
@@ -38,13 +45,16 @@ router.post("/register", async (req, res, next) => {
                     });
                 } else {
                     try {
-                        const response = await User.create({
+                        const user = await User.create({
                             email,
                             username,
                             password
                         });
+                        const token = jwt.sign(user.id, process.env.ACCESS_TOKEN_SECRET);
                         res.json({
                             status: "success",
+                            user,
+                            token
                         })
                     } catch (error) {
                         res.json(error.message);
@@ -66,6 +76,7 @@ router.post("/login", async (req, res) => {
             username,
             password
         } = req.body;
+        console.log(username, password);
         User.findOne({
             username
         }, async (err, result) => {
@@ -74,10 +85,15 @@ router.post("/login", async (req, res) => {
             if (result != null) {
                 if (await bcrypt.compare(password, result.password)) {
                     const token = jwt.sign(result.id, process.env.ACCESS_TOKEN_SECRET);
+                    // res.cookie("token", token, {
+                    //     httpOnly: true
+                    // }).json({
                     res.cookie("token", token, {
                         httpOnly: true
                     }).json({
-                        status: "success"
+                        status: "success",
+                        user: result,
+                        token
                     });
                 } else {
                     res.json({
@@ -122,7 +138,7 @@ router.post("/checkUsername", async (req, res) => {
     }
 });
 
-router.post("/updatePassword", upload.single("image"), async (req, res) => {
+router.post("/updatePassword", authenticateToken, async (req, res) => {
     try {
         let {
             uid,
@@ -232,7 +248,7 @@ router.post("/delete", async (req, res) => {
     }
 });
 
-router.post("/buyPackage", async (req, res) => {
+router.post("/buyPackage", authenticateToken, async (req, res) => {
     try {
         let {
             package,
@@ -256,7 +272,7 @@ router.post("/buyPackage", async (req, res) => {
     }
 });
 
-router.get("/allUsers", async (req, res) => {
+router.get("/allUsers", authenticateToken, async (req, res) => {
     try {
         users = await User.find();
         users.forEach(user => {
@@ -272,7 +288,7 @@ router.get("/allUsers", async (req, res) => {
     }
 });
 
-router.get("/premiumUsers", async (req, res) => {
+router.get("/premiumUsers", authenticateToken, async (req, res) => {
     try {
         users = await User.find({
             'packages': {
@@ -292,7 +308,7 @@ router.get("/premiumUsers", async (req, res) => {
     }
 });
 
-router.get("/logout", (req, res) => {
+router.get("/logout", authenticateToken, (req, res) => {
     res.cookie("token", "", {
         httpOnly: true
     }).json({

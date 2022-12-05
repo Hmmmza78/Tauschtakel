@@ -10,6 +10,14 @@ const reportSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    category: {
+        type: String,
+        required: true
+    },
+    headline: {
+        type: String,
+        required: true
+    },
     uid: {
         type: String,
         required: true

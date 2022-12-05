@@ -1,12 +1,16 @@
 const express = require('express')
 const {
     upload
-} = require("../functions/upload")
+} = require("../../functions/upload")
+const {
+    authenticateToken
+} = require("../../functions/auth");
 
 const router = express.Router();
+router.use(authenticateToken);
 
-const Article = require("../models/articles");
-const User = require("../models/user");
+const Article = require("../../models/articles");
+const User = require("../../models/user");
 
 router.get("/test", (req, res) => {
     res.send("Article")
@@ -18,7 +22,6 @@ router.post("/new", upload.single("image"), async (req, res) => {
             description,
             uid,
             category,
-            status,
             condition,
             price,
             zip
@@ -30,13 +33,13 @@ router.post("/new", upload.single("image"), async (req, res) => {
                 image: newFileName,
                 uid,
                 category,
-                status,
                 condition,
                 price,
                 zip
             });
             res.json({
-                status: "success"
+                status: "success",
+                article
             });
         } catch (e) {
             res.json(e);
@@ -93,7 +96,11 @@ router.post("/approve", async (req, res) => {
         let {
             id,
         } = req.body;
+        if (!id) {
+            throw new Error("undefined parameter")
+        }
         try {
+            console.log(id);
             await Article.findByIdAndUpdate(
                 id, {
                     status: "approved",

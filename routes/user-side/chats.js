@@ -1,8 +1,12 @@
 const express = require('express')
 const router = express.Router();
 
-const Chat = require("../models/chats");
-const User = require("../models/user");
+const Chat = require("../../models/chats");
+const User = require("../../models/user");
+const {
+    authenticateToken
+} = require("../../functions/auth");
+router.use(authenticateToken);
 
 
 router.post("/new", async (req, res) => {

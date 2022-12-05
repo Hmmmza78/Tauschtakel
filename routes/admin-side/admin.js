@@ -2,9 +2,9 @@ const express = require('express');
 
 const router = express.Router();
 
-const Article = require("../models/articles");
-const Deal = require("../models/deals");
-const User = require("../models/user");
+const Article = require("../../models/articles");
+const Deal = require("../../models/deals");
+const User = require("../../models/user");
 
 router.get("/meta", async (req, res) => {
     try {

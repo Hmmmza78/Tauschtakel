@@ -2,7 +2,11 @@ const express = require('express');
 
 const router = express.Router();
 
-const Deal = require("../models/deals");
+const Deal = require("../../models/deals");
+const {
+    authenticateToken
+} = require("../../functions/auth");
+router.use(authenticateToken);
 
 router.get("/test", (req, res) => {
     res.send("Deal")
@@ -23,7 +27,8 @@ router.post("/new", async (req, res) => {
                 article
             });
             res.json({
-                status: "success"
+                status: "success",
+                deal
             });
         } catch (e) {
             res.json({

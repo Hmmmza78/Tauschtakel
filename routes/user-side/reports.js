@@ -2,7 +2,11 @@ const express = require('express');
 
 const router = express.Router();
 
-const Report = require("../models/reports");
+const Report = require("../../models/reports");
+const {
+    authenticateToken
+} = require("../../functions/auth");
+router.use(authenticateToken);
 
 router.get("/test", (req, res) => {
     res.send("Report")
@@ -13,6 +17,8 @@ router.post("/new", async (req, res) => {
         let {
             title,
             description,
+            category,
+            headline,
             uid,
             articleId
         } = req.body;
@@ -20,11 +26,14 @@ router.post("/new", async (req, res) => {
             let report = await Report.create({
                 title,
                 description,
+                category,
+                headline,
                 uid,
                 articleId
             });
             res.json({
-                status: "success"
+                status: "success",
+                report
             });
         } catch (e) {
             res.json({

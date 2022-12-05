@@ -2,44 +2,44 @@ const express = require('express');
 
 const router = express.Router();
 
-router.use(express.json());
-
-const Interest = require("../models/interests");
+const Package = require("../../models/packages");
 
 router.get("/test", (req, res) => {
-    res.send("Interest")
+    res.send("packages")
 });
 
 router.post("/new", async (req, res) => {
     try {
         let {
             title,
+            description,
+            price,
+            duration
         } = req.body;
-        console.log(req.body);
-        Interest.find({
+        Package.find({
             title
         }, async (err, result) => {
             if (err) {
                 res.statusCode(500).end();
                 return
             }
-            console.log(result);
-            if (true) {
-                console.log(result[0].title);
-            }
             if (result.length > 0) {
                 res.json({
                     status: "fail",
-                    message: "Interest already exists!"
+                    message: "Package already exists!"
                 }).end();
                 return;
             }
             try {
-                let interest = await Interest.create({
+                let package = await Package.create({
                     title,
+                    description,
+                    price,
+                    duration
                 });
                 res.json({
-                    status: "success"
+                    status: "success",
+                    package
                 });
             } catch (e) {
                 res.json({
@@ -48,7 +48,58 @@ router.post("/new", async (req, res) => {
                 });
             }
         });
+    } catch (e) {
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
+    }
+});
 
+router.post("/pause", async (req, res) => {
+    try {
+        let {
+            id,
+        } = req.body;
+        try {
+            const package = await Package.findByIdAndUpdate(
+                id, {
+                    status: "paused",
+                    updatedAt: Date.now()
+                }
+            );
+            res.json({
+                status: "success"
+            });
+        } catch (e) {
+            res.json(e.message);
+        }
+    } catch (e) {
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
+    }
+});
+
+router.post("/resume", async (req, res) => {
+    try {
+        let {
+            id,
+        } = req.body;
+        try {
+            const package = await Package.findByIdAndUpdate(
+                id, {
+                    status: "active",
+                    updatedAt: Date.now()
+                }
+            );
+            res.json({
+                status: "success"
+            });
+        } catch (e) {
+            res.json(e.message);
+        }
     } catch (e) {
         res.status(400).json({
             status: "fail",
@@ -61,12 +112,18 @@ router.post("/edit", async (req, res) => {
     try {
         let {
             id,
-            title
+            title,
+            description,
+            price,
+            duration
         } = req.body;
         try {
-            const interest = await Interest.findByIdAndUpdate(
+            const package = await Package.findByIdAndUpdate(
                 id, {
                     title,
+                    description,
+                    price,
+                    duration,
                     updatedAt: Date.now()
                 }
             );
@@ -76,7 +133,6 @@ router.post("/edit", async (req, res) => {
         } catch (e) {
             res.json(e.message);
         }
-
     } catch (e) {
         res.status(400).json({
             status: "fail",
@@ -91,7 +147,7 @@ router.post("/delete", async (req, res) => {
             id,
         } = req.body;
         try {
-            const interest = await Interest.findByIdAndDelete(
+            const package = await Package.findByIdAndDelete(
                 id
             );
             res.json({
@@ -108,12 +164,11 @@ router.post("/delete", async (req, res) => {
     }
 });
 
-router.get("/allInterests", async (req, res) => {
+router.get("/allPackages", async (req, res) => {
     try {
-        const interests = await Interest.find();
-        // console.log(interests);
+        const packages = await Package.find();
         res.json({
-            interests
+            packages
         });
     } catch (e) {
         res.json(e.message);
@@ -125,14 +180,17 @@ router.get("/:id", async (req, res) => {
         let {
             id
         } = req.params;
-        const interest = await Interest.findById(
+        const package = await Package.findById(
             id
         );
         res.json({
-            interest
+            package
         });
     } catch (e) {
-        res.json(e.message);
+        res.status(400).json({
+            status: "fail",
+            message: "provide the correct parameters"
+        }).end();
     }
 });
 

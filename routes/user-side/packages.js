@@ -2,7 +2,11 @@ const express = require('express');
 
 const router = express.Router();
 
-const Package = require("../models/packages");
+const Package = require("../../models/packages");
+const {
+    authenticateToken
+} = require("../../functions/auth");
+router.use(authenticateToken);
 
 router.get("/test", (req, res) => {
     res.send("packages")
@@ -38,7 +42,8 @@ router.post("/new", async (req, res) => {
                     duration
                 });
                 res.json({
-                    status: "success"
+                    status: "success",
+                    package
                 });
             } catch (e) {
                 res.json({
